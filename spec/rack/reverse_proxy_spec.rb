@@ -49,6 +49,12 @@ RSpec.describe Rack::ReverseProxy do
       a_request(:get, 'http://example.com/test/stuff').with(:headers => {'X-Forwarded-Host' => 'example.org'}).should have_been_made
     end
 
+    it "should convert the RACK HTTP headers to standard HTTP headers" do
+      stub_request(:any, 'example.com/test/stuff')
+      get '/test/stuff', nil, {'HTTP_X_CUSTOM_HEADER' => 'foo'}
+      a_request(:get, 'http://example.com/test/stuff').with(:headers => {'X-Custom-Header' => 'foo'}).should have_been_made
+    end
+
     describe "with preserve host turned off" do
       def app
         Rack::ReverseProxy.new(dummy_app) do
