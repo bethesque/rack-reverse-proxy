@@ -55,6 +55,12 @@ RSpec.describe Rack::ReverseProxy do
       a_request(:get, 'http://example.com/test/stuff').with(:headers => {'X-Custom-Header' => 'foo'}).should have_been_made
     end
 
+    it "should maintain the Content-Type header" do
+      stub_request(:any, 'example.com/test/stuff')
+      get '/test/stuff', nil, {'CONTENT_TYPE' => 'foo'}
+      a_request(:get, 'http://example.com/test/stuff').with(:headers => {'Content-Type' => 'foo'}).should have_been_made
+    end
+
     describe "with preserve host turned off" do
       def app
         Rack::ReverseProxy.new(dummy_app) do
