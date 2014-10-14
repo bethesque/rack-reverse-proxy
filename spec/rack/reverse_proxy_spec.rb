@@ -61,6 +61,12 @@ RSpec.describe Rack::ReverseProxy do
       a_request(:get, 'http://example.com/test/stuff').with(:headers => {'Content-Type' => 'foo'}).should have_been_made
     end
 
+    it "supports PATCH requests" do
+      stub_request(:any, 'example.com/test/stuff')
+      patch '/test/stuff'
+      a_request(:patch, 'http://example.com/test/stuff').should have_been_made
+    end
+
     describe "with preserve host turned off" do
       def app
         Rack::ReverseProxy.new(dummy_app) do
